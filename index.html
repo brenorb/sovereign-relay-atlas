@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sovereign Relay Atlas</title>
+    <meta
+      name="description"
+      content="Single-page Nostr article browser for Sovereign Engineering's application exercise."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1117'/%3E%3Cpath d='M18 45V19h6l16 18V19h6v26h-6L24 27v18z' fill='%23fecb6a'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">Sovereign Engineering Exercise</p>
+        <div class="hero-copy">
+          <h1>Sovereign Relay Atlas</h1>
+          <p class="hero-text">
+            A local-first feeling browser for 21 long-form Nostr articles. It
+            pulls kind:30023 events from multiple relays, derives hashtag counts
+            from <code>t</code> tags, and filters them with AND/OR logic.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="refresh-button" class="action-button" type="button">
+            Refresh feed
+          </button>
+          <p id="status-line" class="status-line">Booting relay connections...</p>
+        </div>
+      </header>
+
+      <main class="layout">
+        <aside class="control-panel">
+          <section class="panel-card metrics-card">
+            <div class="metric">
+              <span class="metric-label">Articles</span>
+              <strong id="article-count">0</strong>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Relays</span>
+              <strong id="relay-count">0</strong>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Hashtags</span>
+              <strong id="tag-count">0</strong>
+            </div>
+          </section>
+
+          <section class="panel-card">
+            <div class="panel-head">
+              <h2>Filter logic</h2>
+              <p>Switch between inclusive and strict tag matching.</p>
+            </div>
+            <div class="mode-toggle" role="radiogroup" aria-label="Filter mode">
+              <label class="mode-option">
+                <input type="radio" name="match-mode" value="or" checked />
+                <span>OR</span>
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="match-mode" value="and" />
+                <span>AND</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="panel-card">
+            <div class="panel-head">
+              <h2>Hashtags</h2>
+              <p>Counts are computed from the current 21-article dataset.</p>
+            </div>
+            <div id="tag-filters" class="tag-filter-list" aria-live="polite"></div>
+          </section>
+
+          <section class="panel-card relay-card">
+            <div class="panel-head">
+              <h2>Relay set</h2>
+              <p>The app queries each relay directly over WebSocket.</p>
+            </div>
+            <ul id="relay-list" class="relay-list"></ul>
+          </section>
+        </aside>
+
+        <section class="results-panel">
+          <div class="results-head">
+            <div>
+              <p class="eyebrow">Live output</p>
+              <h2>Latest long-form notes</h2>
+            </div>
+            <p id="result-summary" class="result-summary">
+              Waiting for articles...
+            </p>
+          </div>
+
+          <div id="loading-state" class="loading-state">
+            <div class="pulse"></div>
+            <p>Querying relays and building the article map...</p>
+          </div>
+
+          <div id="empty-state" class="empty-state hidden">
+            <h3>No articles match the current filter</h3>
+            <p>Try clearing some hashtags or switching from AND to OR mode.</p>
+          </div>
+
+          <div id="article-grid" class="article-grid hidden"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
