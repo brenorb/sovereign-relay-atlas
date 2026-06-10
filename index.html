@@ -28,7 +28,11 @@
           <h1>Sovereign Relay Atlas</h1>
           <p class="hero-text">
             A local-first feeling browser for 21 long-form Nostr articles. It
-            pulls kind:30023 events from multiple relays, derives hashtag counts
+            pulls kind:30023 events from multiple
+            <a class="text-link" href="#relay-section">relays</a>, derives
+            <a class="text-link" href="#hashtag-filters-section"
+              >hashtag counts</a
+            >
             from <code>t</code> tags, and filters them with AND/OR logic.
           </p>
         </div>
@@ -74,7 +78,7 @@
             </div>
           </section>
 
-          <section class="panel-card">
+          <section id="hashtag-filters-section" class="panel-card section-target">
             <div class="panel-head">
               <h2>Hashtags</h2>
               <p>Counts are computed from the current 21-article dataset.</p>
@@ -82,11 +86,34 @@
             <div id="tag-filters" class="tag-filter-list" aria-live="polite"></div>
           </section>
 
-          <section class="panel-card relay-card">
+          <section id="relay-section" class="panel-card relay-card section-target">
             <div class="panel-head">
               <h2>Relay set</h2>
               <p>The app queries each relay directly over WebSocket.</p>
             </div>
+            <form id="relay-form" class="relay-form">
+              <label class="sr-only" for="relay-input">Relay URL</label>
+              <input
+                id="relay-input"
+                class="relay-input"
+                type="url"
+                inputmode="url"
+                placeholder="wss://relay.example.com"
+                autocomplete="off"
+              />
+              <div class="relay-form-actions">
+                <button id="relay-submit" class="action-button" type="submit">
+                  Add relay
+                </button>
+                <button
+                  id="relay-cancel"
+                  class="text-button hidden"
+                  type="button"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
             <ul id="relay-list" class="relay-list"></ul>
           </section>
         </aside>
@@ -108,13 +135,43 @@
           </div>
 
           <div id="empty-state" class="empty-state hidden">
-            <h3>No articles match the current filter</h3>
-            <p>Try clearing some hashtags or switching from AND to OR mode.</p>
+            <h3 id="empty-state-title">No articles match the current filter</h3>
+            <p id="empty-state-body">
+              Try clearing some hashtags or switching from AND to OR mode.
+            </p>
           </div>
 
           <div id="article-grid" class="article-grid hidden"></div>
         </section>
       </main>
+    </div>
+
+    <div id="article-reader" class="article-reader hidden" aria-hidden="true">
+      <div class="article-reader-backdrop" data-close-reader="true"></div>
+      <article
+        class="article-reader-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reader-title"
+      >
+        <div class="article-reader-head">
+          <div>
+            <p class="eyebrow">Reader</p>
+            <h2 id="reader-title">Select an article</h2>
+            <p id="reader-meta" class="reader-meta"></p>
+          </div>
+          <button
+            id="reader-close"
+            class="text-button"
+            type="button"
+            aria-label="Close article"
+          >
+            Close
+          </button>
+        </div>
+        <div id="reader-tags" class="article-tags reader-tags"></div>
+        <div id="reader-body" class="reader-body"></div>
+      </article>
     </div>
 
     <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>

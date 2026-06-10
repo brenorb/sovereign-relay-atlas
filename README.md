@@ -10,6 +10,9 @@ Single-page HTML app for Sovereign Engineering's coding exercise.
 - Extracts hashtags from `t` tags and shows counts
 - Filters the feed with `AND` / `OR` logic
 - Fetches author metadata from `kind:0` events to display name and picture
+- Opens the full article reader when you click a note card
+- Makes in-app text affordances clickable, including relay/hashtag jump links and article tag filters
+- Lets you add, edit, remove, and persist the relay set locally
 
 ## Local run
 
@@ -23,6 +26,20 @@ Then open:
 
 ```text
 http://localhost:4173
+```
+
+## Tests
+
+Install dependencies once:
+
+```bash
+npm install
+```
+
+Run the Playwright suite:
+
+```bash
+npm test
 ```
 
 ## Publish
