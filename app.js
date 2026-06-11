@@ -724,7 +724,13 @@ function getTagValues(tags, name) {
 }
 
 function uniqueTags(tags) {
-  return [...new Set(tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))];
+  return [
+    ...new Set(
+      tags
+        .map((tag) => tag.trim().toLowerCase().replace(/^#+/, ""))
+        .filter(Boolean),
+    ),
+  ];
 }
 
 function fallbackTitle(content) {
