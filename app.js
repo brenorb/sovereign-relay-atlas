@@ -93,7 +93,15 @@ function bindEvents() {
   });
 }
 
+// Each call to loadArticles takes a generation. Removing a relay starts a new
+// load while an older one may still be waiting on that relay; only the latest
+// generation may change what the page shows.
+let loadGeneration = 0;
+
 async function loadArticles() {
+  const generation = ++loadGeneration;
+  const isCurrent = () => generation === loadGeneration;
+
   if (state.relays.length === 0) {
     state.articles = [];
     state.lastUpdated = null;
@@ -119,12 +127,15 @@ async function loadArticles() {
       .sort((left, right) => right.timestamp - left.timestamp)
       .slice(0, ARTICLE_COUNT);
 
+    if (!isCurrent()) return;
+
     const authorPubkeys = [...new Set(normalizedArticles.map((article) => article.pubkey))];
     const profileEvents = await fetchEventsFromRelays(
       { kinds: [0], authors: authorPubkeys, limit: authorPubkeys.length * 2 || 10 },
       PROFILE_TIMEOUT_MS,
     );
     const profiles = buildProfileMap(profileEvents);
+    if (!isCurrent()) return;
 
     state.articles = normalizedArticles.map((article) => ({
       ...article,
@@ -144,6 +155,7 @@ async function loadArticles() {
       `Loaded ${state.articles.length} articles from ${state.relays.length} relays.`,
     );
   } catch (error) {
+    if (!isCurrent()) return;
     console.error(error);
     setStatus("Could not build the feed. Try refreshing in a few seconds.");
     state.articles = [];
@@ -152,7 +164,7 @@ async function loadArticles() {
     renderTagFilters();
     renderArticles();
   } finally {
-    setLoading(false);
+    if (isCurrent()) setLoading(false);
   }
 }
 

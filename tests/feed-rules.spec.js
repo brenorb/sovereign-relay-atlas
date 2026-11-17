@@ -44,3 +44,16 @@ test("two authors' articles with the same d tag both appear", async ({ page }) =
   await expect(page.getByRole("heading", { name: "Alice Intro" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Bob Intro" })).toBeVisible();
 });
+
+test("a feed from a removed relay never replaces the newer feed", async ({ page }) => {
+  const a = "c".repeat(64);
+  await mockRelays(page, ["wss://slow.example", "wss://fast.example"], {
+    "wss://slow.example": { delay: 800, events: [article("s1", a, "slow", "Slow Article", 1_717_600_000)] },
+    "wss://fast.example": { delay: 0, events: [article("f1", a, "fast", "Fast Article", 1_717_500_000)] },
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Remove relay wss://slow.example" }).click();
+  await expect(page.getByRole("heading", { name: "Fast Article" })).toBeVisible();
+  await page.waitForTimeout(1200);
+  await expect(page.getByRole("heading", { name: "Slow Article" })).toHaveCount(0);
+});
