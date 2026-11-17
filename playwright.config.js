@@ -8,8 +8,8 @@ module.exports = defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command:
-      "python3 -m http.server 4173 --directory /Users/breno/Documents/code/PROJECTS/sovereign-relay-atlas",
+    // Serve this checkout, wherever it lives.
+    command: `python3 -m http.server 4173 --directory ${JSON.stringify(__dirname)}`,
     port: 4173,
     reuseExistingServer: true,
   },
