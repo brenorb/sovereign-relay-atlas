@@ -1,0 +1,22 @@
+---
+title: "Browse long-form articles"
+---
+stateDiagram-v2
+  s0: Querying the relays
+  s1: No articles found
+  s2: Article cards
+  s3: Asked to add a relay
+  s4: Reading an article
+  [*] --> s0
+  s0 --> s1: relays return nothing
+  s0 --> s2: relays return articles
+  s0 --> s3: you remove the last relay
+  s1 --> s0: you add, edit or remove a relay or you press refresh
+  s1 --> s3: you remove the last relay
+  s2 --> s0: you add, edit or remove a relay or you press refresh
+  s2 --> s3: you remove the last relay
+  s2 --> s4: you open a card
+  s3 --> s0: you add, edit or remove a relay
+  s4 --> s0: you add, edit or remove a relay
+  s4 --> s2: you close the reader
+  s4 --> s3: you remove the last relay
