@@ -257,7 +257,10 @@ function dedupeArticles(events) {
   const eventMap = new Map();
 
   for (const event of events) {
-    const dedupeKey = getTagValue(event.tags, "d") || event.id;
+    // NIP-23 articles are addressed by author and d tag: two authors may
+    // both publish an article with d = "intro".
+    const dTag = getTagValue(event.tags, "d");
+    const dedupeKey = dTag ? `${event.pubkey}:${dTag}` : event.id;
     const existing = eventMap.get(dedupeKey);
 
     if (!existing || getArticleTimestamp(event) > getArticleTimestamp(existing)) {
